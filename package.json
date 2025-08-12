@@ -1,0 +1,25 @@
+{
+	"name": "unirepo-node",
+	"version": "0.0.0",
+	"description": "",
+	"type": "module",
+	"main": "index.js",
+	"bin": {
+		"unirepo": "dist/index.js"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node dist/index.js",
+		"build": "tsc"
+	},
+	"keywords": [],
+	"author": "rm-netsu",
+	"license": "ISC",
+	"packageManager": "pnpm@10.13.1",
+	"devDependencies": {
+		"@types/node": "^24.2.0"
+	},
+	"dependencies": {
+		"commander": "^14.0.0"
+	}
+}

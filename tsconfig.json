@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"incremental": true,							/* Save .tsbuildinfo files to allow for incremental compilation of projects. */
+		"composite": true,								/* Enable constraints that allow a TypeScript project to be used with project references. */
+		"tsBuildInfoFile": "./.tsbuildinfo",			/* Specify the path to .tsbuildinfo incremental compilation file. */
+		
+		"target": "esnext",								/* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+		
+		"module": "nodenext",							/* Specify what module code is generated. */
+		"rootDir": "./src",								/* Specify the root folder within your source files. */
+		"moduleResolution": "nodenext",					/* Specify how TypeScript looks up a file from a given module specifier. */
+		"baseUrl": "./src",								/* Specify the base directory to resolve non-relative module names. */
+		"noUncheckedSideEffectImports": true,			/* Check side effect imports. */
+		// "allowArbitraryExtensions": true,			/* Enable importing files with any extension, provided a declaration file is present. */
+
+		"outDir": "./dist",								/* Specify an output folder for all emitted files. */
+		"newLine": "lf",								/* Set the newline character for emitting files. */
+
+		"isolatedModules": true,						/* Ensure that each file can be safely transpiled without relying on other imports. */
+		"verbatimModuleSyntax": true,					/* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
+		"isolatedDeclarations": true,					/* Require sufficient annotation on exports so other tools can trivially generate declaration files. */
+		"erasableSyntaxOnly": true,						/* Do not allow runtime constructs that are not part of ECMAScript. */
+		"esModuleInterop": true,						/* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+		"forceConsistentCasingInFileNames": true,		/* Ensure that casing is correct in imports. */
+
+		"strict": true,									/* Enable all strict type-checking options. */
+		"noImplicitThis": true,							/* Enable error reporting when 'this' is given the type 'any'. */
+		"useUnknownInCatchVariables": true,				/* Default catch clause variables as 'unknown' instead of 'any'. */
+		"noUncheckedIndexedAccess": true,				/* Add 'undefined' to a type when accessed using an index. */
+		"noImplicitOverride": true,						/* Ensure overriding members in derived classes are marked with an override modifier. */
+		
+		"skipLibCheck": true							/* Skip type checking all .d.ts files. */
+	}
+}
