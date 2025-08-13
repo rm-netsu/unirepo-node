@@ -2,9 +2,11 @@
 
 import { Command } from 'commander';
 import * as path from 'path';
+import fs from 'fs/promises';
 import { store } from './store.js';
 import { deflate } from './deflate.js';
 import { inflate } from './inflate.js';
+import { exportFiles } from './export.js';
 
 const program = new Command();
 
@@ -63,6 +65,38 @@ program
 			console.log(`Dependencies in '${dirPath}' successfully inflated.`);
 		} catch (error) {
 			console.error('An error occurred during the inflate operation:', error);
+			process.exit(1);
+		}
+	});
+
+// Определяем команду `export`
+program
+	.command('export')
+	.description('Exports canonical files to a specified directory, compressing them with xz.')
+	.option('-o, --output <path>', 'Path to the output directory.', path.join(process.cwd(), 'export'))
+	.action(async (options, command) => {
+		const repoRootPath = command.parent.opts().repo;
+		const outputDir = options.output;
+		const exportLockPath = path.join(repoRootPath, 'export-lock');
+
+		let lastExportTimestamp = null;
+		try {
+			lastExportTimestamp = await fs.readFile(exportLockPath, 'utf-8');
+			console.log(`Found previous export timestamp: ${lastExportTimestamp}`);
+		} catch (error: any) {
+			if (error.code === 'ENOENT') {
+				console.log('No previous export-lock file found. All files will be exported.');
+			} else {
+				console.error(`Error reading export-lock file:`, error);
+				process.exit(1);
+			}
+		}
+		
+		try {
+			await exportFiles(repoRootPath, outputDir, lastExportTimestamp);
+			console.log('Export command completed successfully.');
+		} catch (error) {
+			console.error('An error occurred during the export command:', error);
 			process.exit(1);
 		}
 	});
