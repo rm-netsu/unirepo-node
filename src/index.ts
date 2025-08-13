@@ -10,20 +10,17 @@ import { exportFiles } from './export.js';
 
 const program = new Command();
 
-// Определяем базовую информацию об утилите
 program
 	.name('unirepo')
 	.description('A CLI tool for managing canonical file dependencies.')
 	.version('0.0.1');
 
-// Определяем глобальную опцию для пути к репозиторию
 program.option(
 	'-R, --repo <path>',
 	'Path to the unirepo root directory.',
-	path.join(process.cwd(), '.unirepo-root') // Путь по умолчанию
+	path.join(process.cwd(), '.unirepo-root')
 );
 
-// Определяем команду `store`
 program
 	.command('store <filePath>')
 	.description('Stores a file in the canonical repository, creates a symlink, and registers dependencies.')
@@ -38,7 +35,6 @@ program
 		}
 	});
 
-// Определяем команду `deflate`
 program
 	.command('deflate')
 	.description('Removes files from the current directory that are listed as dependencies.')
@@ -53,7 +49,6 @@ program
 		}
 	});
 
-// Определяем команду `inflate`
 program
 	.command('inflate')
 	.description('Recreates symbolic links for dependencies in the current directory.')
@@ -69,15 +64,21 @@ program
 		}
 	});
 
-// Определяем команду `export`
 program
 	.command('export')
 	.description('Exports canonical files to a specified directory, compressing them with xz.')
 	.option('-o, --output <path>', 'Path to the output directory.', path.join(process.cwd(), 'export'))
+	.option('-cx, --compression <level>', 'Compression level (0-9). 0 is fastest, 9 is best.', '9')
 	.action(async (options, command) => {
 		const repoRootPath = command.parent.opts().repo;
 		const outputDir = options.output;
+		const compressionLevel = parseInt(options.compression, 10);
 		const exportLockPath = path.join(repoRootPath, 'export-lock');
+
+		if (!Number.isInteger(compressionLevel) || compressionLevel < 0 || compressionLevel > 9) {
+			console.error('Error: Compression level must be an integer between 0 and 9.');
+			process.exit(1);
+		}
 
 		let lastExportTimestamp = null;
 		try {
@@ -93,7 +94,7 @@ program
 		}
 		
 		try {
-			await exportFiles(repoRootPath, outputDir, lastExportTimestamp);
+			await exportFiles(repoRootPath, outputDir, lastExportTimestamp, compressionLevel);
 			console.log('Export command completed successfully.');
 		} catch (error) {
 			console.error('An error occurred during the export command:', error);
