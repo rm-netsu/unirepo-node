@@ -68,7 +68,7 @@ program
 	.command('export')
 	.description('Exports canonical files to a specified directory, compressing them with xz.')
 	.option('-o, --output <path>', 'Path to the output directory.', path.join(process.cwd(), 'export'))
-	.option('-cx, --compression <level>', 'Compression level (0-9). 0 is fastest, 9 is best.', '9')
+	.option('--cx, --compression <level>', 'Compression level (0-9). 0 is fastest, 9 is best.', '9')
 	.action(async (options, command) => {
 		const repoRootPath = command.parent.opts().repo;
 		const outputDir = options.output;
