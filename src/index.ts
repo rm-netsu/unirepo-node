@@ -7,6 +7,8 @@ import { store } from './store.js';
 import { deflate } from './deflate.js';
 import { inflate } from './inflate.js';
 import { exportFiles } from './export.js';
+import { prune } from './prune.js';
+import { collectUsedHashes } from './collect.js';
 
 const program = new Command();
 
@@ -101,5 +103,35 @@ program
 			process.exit(1);
 		}
 	});
+
+program
+	.command('collect')
+	.description('Collects and reports on all used file hashes from leech directories.')
+	.action(async (options, command) => {
+		const repoRootPath = command.parent.opts().repo;
+		try {
+			const usedHashes = await collectUsedHashes(repoRootPath);
+			console.log(`\nSuccessfully collected ${usedHashes.size} unique hashes.`);
+		} catch (error) {
+			console.error('An error occurred during the collect operation:', error);
+			process.exit(1);
+		}
+	});
+
+program
+    .command('prune')
+    .description('Finds and removes unused files from the canonical repository.')
+    .option('--dry, --dry-run', 'Lists files that would be removed without deleting them.', false)
+    .action(async (options, command) => {
+        const repoRootPath = command.parent.opts().repo;
+        const dryRun = options.dryRun;
+        try {
+            await prune(repoRootPath, dryRun);
+            console.log('Prune command completed successfully.');
+        } catch (error) {
+            console.error('An error occurred during the prune operation:', error);
+            process.exit(1);
+        }
+    });
 
 program.parse(process.argv);
