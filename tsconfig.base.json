@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"incremental": true, // enable .tsbuildinfo
+		"composite": true,
+		"tsBuildInfoFile": "./.tsbuildinfo",
+
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"noUncheckedSideEffectImports": true,
+
+		"outDir": "./dist",
+		"newLine": "lf",
+
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
+		// "isolatedDeclarations": true,
+		"erasableSyntaxOnly": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+
+		"strict": true,
+		"noImplicitThis": true,
+		"useUnknownInCatchVariables": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+
+		"skipLibCheck": true,
+		
+		"paths": {
+			"#/*": ["./src/*"],
+		},
+	},
+	"tsc-alias": {
+		"resolveFullPaths": true,
+	},
+}
