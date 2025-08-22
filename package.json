@@ -14,7 +14,7 @@
 	},
 	"keywords": [],
 	"author": "rm-netsu",
-	"license": "ISC",
+	"license": "GPL-3.0-or-later",
 	"packageManager": "pnpm@10.13.1",
 	"devDependencies": {
 		"@eslint/js": "^9.34.0",
