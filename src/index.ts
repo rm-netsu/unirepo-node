@@ -213,6 +213,7 @@ program
 		'Force replace files with symlinks to repository files',
 	)
 	.option('--store', 'Register files with changed hashes in the repository')
+	.option('--global', 'Check all directories from leeches.txt')
 	.action(async (options, command) => {
 		const repoRootPath = command.parent.opts().repo as string
 		const dirPath = process.cwd()
