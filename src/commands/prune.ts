@@ -3,7 +3,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { collectUsedHashes } from '#/commands/collect.js'
+import { collectUsedHashesSilent } from '#/commands/collect.js'
 
 const getAllCanonicalFiles = async (lookupDirectory: string) => {
 	const allCanonicalFiles = new Map<string, string>() // Map<hash, filePath>
@@ -54,7 +54,7 @@ export const prune = async (
 		console.log(`Found ${allCanonicalFiles.size} total canonical files.`)
 
 		// 2. Get a list of all used file hashes from the new collector function.
-		const usedHashes = await collectUsedHashes(repoRootPath)
+		const usedHashes = await collectUsedHashesSilent(repoRootPath)
 
 		// 3. Find orphan files (in allCanonicalFiles but not in usedHashes).
 		const orphanFiles: string[] = []

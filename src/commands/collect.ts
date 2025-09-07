@@ -8,6 +8,7 @@ import { readLeechesFile } from '#/leeches/parse.js'
 
 interface CollectOptions {
 	table?: boolean
+	silent?: boolean
 }
 
 interface FileHashEntry {
@@ -114,15 +115,26 @@ export const collectUsedHashes = async (
 	const uniqueHashes = new Set(fileEntries.map(entry => entry.hash))
 
 	// Output the results
-	if (options.table) {
-		console.log('\n' + formatAsTable(fileEntries))
-	} else {
-		console.log(formatAsList(fileEntries, uniqueHashes))
+	if (!options.silent) {
+		if (options.table) {
+			console.log('\n' + formatAsTable(fileEntries))
+		} else {
+			console.log(formatAsList(fileEntries, uniqueHashes))
+		}
+
+		console.log(
+			`\nSuccessfully collected ${fileEntries.length} file entries with ${uniqueHashes.size} unique hashes.`,
+		)
 	}
 
-	console.log(
-		`\nSuccessfully collected ${fileEntries.length} file entries with ${uniqueHashes.size} unique hashes.`,
-	)
-
 	return uniqueHashes
+}
+
+/**
+ * Silent version for internal use by other commands
+ */
+export const collectUsedHashesSilent = async (
+	repoRootPath: string,
+): Promise<Set<string>> => {
+	return collectUsedHashes(repoRootPath, { silent: true })
 }
