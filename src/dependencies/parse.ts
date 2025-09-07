@@ -41,3 +41,16 @@ export const getLeechDependencies = async (
 		throw error
 	}
 }
+
+export const writeDependencies = async (
+	leechDirectory: string,
+	entries: Map<string, string>,
+): Promise<void> => {
+	const dependenciesPath = getDependenciesPath(leechDirectory)
+	const content =
+		[...entries.entries()]
+			.map(([filename, hash]) => `${hash} ${filename}`)
+			.join('\n') + '\n'
+
+	await fs.writeFile(dependenciesPath, content, 'utf8')
+}

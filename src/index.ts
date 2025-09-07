@@ -11,6 +11,7 @@ import path from 'node:path'
 
 import { Command } from 'commander'
 
+import { check, generateReport } from '#/commands/check.js'
 import { collectUsedHashes } from '#/commands/collect.js'
 import { deflate } from '#/commands/deflate.js'
 import { exportFiles } from '#/commands/export.js'
@@ -195,6 +196,47 @@ program
 		} catch (error) {
 			console.error(
 				'An error occurred during the prune operation:',
+				error,
+			)
+			process.exit(1)
+		}
+	})
+
+program
+	.command('check')
+	.description(
+		'Checks the integrity of dependencies in the current directory.',
+	)
+	.option('--drop', 'Remove dependencies with changed hashes from the list')
+	.option(
+		'--force-fix',
+		'Force replace files with symlinks to repository files',
+	)
+	.option('--store', 'Register files with changed hashes in the repository')
+	.action(async (options, command) => {
+		const repoRootPath = command.parent.opts().repo as string
+		const dirPath = process.cwd()
+
+		// Check for conflicting options
+		const optionCount = [
+			options.drop,
+			options.forceFix,
+			options.store,
+		].filter(Boolean).length
+		if (optionCount > 1) {
+			console.error(
+				'Error: Conflicting options specified. Use only one of --drop, --force-fix, or --store.',
+			)
+			process.exit(1)
+		}
+
+		try {
+			const results = await check(dirPath, repoRootPath, options)
+			const report = generateReport(results)
+			console.log(report)
+		} catch (error) {
+			console.error(
+				'An error occurred during the check operation:',
 				error,
 			)
 			process.exit(1)
