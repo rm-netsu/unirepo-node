@@ -161,13 +161,16 @@ program
 	.description(
 		'Collects and reports on all used file hashes from leech directories.',
 	)
+	.option('--table', 'Output results as a table with filename | hash format')
 	.action(async (options, command) => {
 		const repoRootPath = command.parent.opts().repo
 		try {
-			const usedHashes = await collectUsedHashes(repoRootPath)
-			console.log(
-				`\nSuccessfully collected ${usedHashes.size} unique hashes.`,
-			)
+			const usedHashes = await collectUsedHashes(repoRootPath, options)
+			if (!options.table) {
+				console.log(
+					`\nSuccessfully collected ${usedHashes.size} unique hashes.`,
+				)
+			}
 		} catch (error) {
 			console.error(
 				'An error occurred during the collect operation:',
