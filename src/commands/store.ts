@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { getCanonicalPath } from './canonical-path.js'
-import { deduplicate } from './deduplicate.js'
-import { isENOENT } from './fsutils.js'
-import { registerDependency } from './register-dependency.js'
+import { deduplicate } from '#/deduplicate.js'
+import { getCanonicalPath } from '#/dependencies/canonical.js'
+import { registerDependency } from '#/dependencies/register.js'
+import { isENOENT } from '#/fsutils.js'
 
 /**
  * Stores a file in a canonical location, deduplicates it, and registers its dependencies.

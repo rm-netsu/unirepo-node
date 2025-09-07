@@ -35,3 +35,6 @@ export const getCanonicalPath = async (
 
 	return canonicalPath
 }
+
+export const getDependenciesPath = (leechDirectory: string) =>
+	path.join(leechDirectory, '.unirepo', 'dependencies.txt')

@@ -11,13 +11,13 @@ import path from 'node:path'
 
 import { Command } from 'commander'
 
-import { collectUsedHashes } from './collect.js'
-import { deflate } from './deflate.js'
-import { exportFiles } from './export.js'
-import { isENOENT } from './fsutils.js'
-import { inflate } from './inflate.js'
-import { prune } from './prune.js'
-import { store } from './store.js'
+import { collectUsedHashes } from '#/commands/collect.js'
+import { deflate } from '#/commands/deflate.js'
+import { exportFiles } from '#/commands/export.js'
+import { inflate } from '#/commands/inflate.js'
+import { prune } from '#/commands/prune.js'
+import { store } from '#/commands/store.js'
+import { isENOENT } from '#/fsutils.js'
 
 const program = new Command()
 

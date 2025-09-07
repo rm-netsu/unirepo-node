@@ -1,10 +1,37 @@
 /* eslint-disable max-depth */
-/* eslint-disable complexity */
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { collectUsedHashes } from './collect.js'
+import { collectUsedHashes } from '#/commands/collect.js'
+
+const getAllCanonicalFiles = async (lookupDirectory: string) => {
+	const allCanonicalFiles = new Map<string, string>() // Map<hash, filePath>
+
+	const extensions = await fs.readdir(lookupDirectory)
+	for (const extensionDirectory of extensions) {
+		const hexDirectories = await fs.readdir(
+			path.join(lookupDirectory, extensionDirectory),
+		)
+		for (const hexDirectory of hexDirectories) {
+			const files = await fs.readdir(
+				path.join(lookupDirectory, extensionDirectory, hexDirectory),
+			)
+			for (const file of files) {
+				const filePath = path.join(
+					lookupDirectory,
+					extensionDirectory,
+					hexDirectory,
+					file,
+				)
+				const fileHash = path.basename(file, path.extname(file))
+				allCanonicalFiles.set(fileHash, filePath)
+			}
+		}
+	}
+
+	return allCanonicalFiles
+}
 
 /**
  * Finds and optionally removes unused canonical files in the repository.
@@ -13,41 +40,17 @@ import { collectUsedHashes } from './collect.js'
  * @param {boolean} dryRun If true, only reports on files to be removed without deleting them.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
-export async function prune(
+export const prune = async (
 	repoRootPath: string,
 	dryRun: boolean,
-): Promise<void> {
+): Promise<void> => {
 	const lookupDirectory = path.join(repoRootPath, 'lookup', 'sha256')
 
 	console.log('Starting the prune operation...')
 
 	try {
 		// 1. Get a list of all canonical files and their hashes.
-		const allCanonicalFiles = new Map<string, string>() // Map<hash, filePath>
-		console.log(`Scanning canonical repository for all files...`)
-		const extensions = await fs.readdir(lookupDirectory)
-		// eslint-disable-next-line unicorn/prevent-abbreviations
-		for (const extDir of extensions) {
-			const hexDirectories = await fs.readdir(
-				path.join(lookupDirectory, extDir),
-			)
-			// eslint-disable-next-line unicorn/prevent-abbreviations
-			for (const hexDir of hexDirectories) {
-				const files = await fs.readdir(
-					path.join(lookupDirectory, extDir, hexDir),
-				)
-				for (const file of files) {
-					const filePath = path.join(
-						lookupDirectory,
-						extDir,
-						hexDir,
-						file,
-					)
-					const fileHash = path.basename(file, path.extname(file))
-					allCanonicalFiles.set(fileHash, filePath)
-				}
-			}
-		}
+		const allCanonicalFiles = await getAllCanonicalFiles(lookupDirectory)
 		console.log(`Found ${allCanonicalFiles.size} total canonical files.`)
 
 		// 2. Get a list of all used file hashes from the new collector function.
@@ -79,7 +82,7 @@ export async function prune(
 			console.log('\n--- Removing unused files ---')
 			for (const filePath of orphanFiles) {
 				try {
-					// await fs.unlink(filePath);
+					await fs.unlink(filePath)
 					console.log(`Removed: ${filePath}`)
 				} catch (error) {
 					console.error(`Error removing file '${filePath}':`, error)
